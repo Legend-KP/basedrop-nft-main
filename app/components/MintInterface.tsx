@@ -55,7 +55,7 @@ export const MintInterface = () => {
     }, [address, price]);
 
     return (
-        <div className="flex flex-col items-center space-y-6 p-6">
+        <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-[#FF6B00] to-[#FF3D00] rounded-lg">
             <div className="relative w-64 h-64">
                 <Image
                     src="/basedrop-player.png"
@@ -66,6 +66,10 @@ export const MintInterface = () => {
                 />
             </div>
 
+            <p className="text-white text-center text-lg px-4">
+                If you loved BaseDrop, mint the exclusive BaseDrop NFT and unlock perks in future games by Trenchverse.
+            </p>
+
             <div className="w-full max-w-sm">
                 {address ? (
                     <Transaction
@@ -75,7 +79,7 @@ export const MintInterface = () => {
                             console.error("Transaction failed:", error)
                         }
                     >
-                        <TransactionButton text="Mint BaseDrop" className="w-full px-6 py-3 text-lg font-medium bg-[#0052FF] hover:bg-[#0047E1] text-white rounded-lg transition-colors" />
+                        <TransactionButton text="Mint your BaseDrop NFT" className="w-full px-6 py-3 text-lg font-medium bg-[#0052FF] hover:bg-[#0047E1] text-white rounded-lg transition-colors" />
                         <TransactionStatus>
                             <TransactionStatusAction />
                             <TransactionStatusLabel />
@@ -87,9 +91,9 @@ export const MintInterface = () => {
                         </TransactionToast>
                     </Transaction>
                 ) : (
-                    <p className="text-yellow-400 text-sm text-center">
-                        Connect your wallet to mint
-                    </p>
+                    <button className="w-full px-6 py-3 text-lg font-medium bg-[#0052FF] hover:bg-[#0047E1] text-white rounded-lg transition-colors">
+                        Connect Wallet
+                    </button>
                 )}
             </div>
         </div>
