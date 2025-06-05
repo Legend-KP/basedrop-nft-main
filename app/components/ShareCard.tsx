@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from "next/navigation";
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
@@ -9,7 +9,6 @@ import { sdk } from '@farcaster/frame-sdk';
 export const ShareCard: React.FC = () => {
   const searchParams = useSearchParams();
   const txHash = searchParams.get("tx");
-  const [tokenId, setTokenId] = useState<string | null>(null);
 
   const shareMessage = `I've minted my BaseDrop NFT! 🎮\nMint yours too and unlock perks in future games by Trenchverse\n\nView my NFT: ${window.location.origin}/share?tx=${txHash}`;
 
@@ -21,7 +20,7 @@ export const ShareCard: React.FC = () => {
           text: shareMessage,
           embeds: [`${window.location.origin}`]
         });
-      } catch (castError) {
+      } catch {
         console.log("Farcaster cast not available, falling back to native share");
         // Fall back to native share if Farcaster is not available
         await navigator.share({
