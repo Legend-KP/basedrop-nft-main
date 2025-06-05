@@ -1,0 +1,16 @@
+{
+    "name": "BaseDrop Player",
+    "description": "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
+    "image": "https://basedrop-nft-main.vercel.app/basedrop-player.png",
+    "external_url": "https://basedrop-nft-main.vercel.app",
+    "attributes": [
+        {
+            "trait_type": "Collection",
+            "value": "BaseDrop"
+        },
+        {
+            "trait_type": "Type",
+            "value": "Player"
+        }
+    ]
+} 

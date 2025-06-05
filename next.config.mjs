@@ -6,6 +6,18 @@ const nextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
+  images: {
+    domains: [],
+    unoptimized: true
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/token/:path*',
+        destination: '/api/metadata'
+      }
+    ];
+  }
 };
 
 export default nextConfig;
