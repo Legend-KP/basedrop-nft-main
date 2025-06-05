@@ -17,6 +17,10 @@ import {
     TransactionStatusLabel,
     TransactionStatus,
 } from "@coinbase/onchainkit/transaction";
+import {
+    ConnectWallet,
+    Wallet,
+} from "@coinbase/onchainkit/wallet";
 
 const CONTRACT_ADDRESS = "0xf9fe12E004A23036ea1dBa3B8bcb7F49Ee7eEe57";
 
@@ -56,7 +60,7 @@ export const MintInterface = () => {
 
     return (
         <div className="flex flex-col items-center space-y-6 p-6 bg-gradient-to-br from-[#FF6B00] to-[#FF3D00] rounded-lg">
-            <div className="relative w-64 h-64">
+            <div className="relative w-80 h-80">
                 <Image
                     src="/basedrop-player.png"
                     alt="BaseDrop Player NFT"
@@ -91,9 +95,9 @@ export const MintInterface = () => {
                         </TransactionToast>
                     </Transaction>
                 ) : (
-                    <button className="w-full px-6 py-3 text-lg font-medium bg-[#0052FF] hover:bg-[#0047E1] text-white rounded-lg transition-colors">
-                        Connect Wallet
-                    </button>
+                    <Wallet>
+                        <ConnectWallet className="w-full px-6 py-3 text-lg font-medium bg-[#0052FF] hover:bg-[#0047E1] text-white rounded-lg transition-colors" />
+                    </Wallet>
                 )}
             </div>
         </div>
