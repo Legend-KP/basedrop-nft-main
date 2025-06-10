@@ -1,8 +1,8 @@
 import {
   setUserNotificationDetails,
   deleteUserNotificationDetails,
-} from "@/src/lib/notification";
-import { sendFrameNotification } from "@/src/lib/notification-client";
+} from "@/lib/notification";
+import { sendFrameNotification } from "@/lib/notification-client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
