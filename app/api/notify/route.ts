@@ -1,16 +1,32 @@
-import { sendFrameNotification } from "../../lib/notification-client";
+import { sendFrameNotification } from "@/lib/notification-client";
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const body = await req.json();
-    
-    // Send notification
-    await sendFrameNotification(body.message || "New notification!");
+    const body = await request.json();
+    const { fid, notification } = body;
 
-    return NextResponse.json({ success: true });
+    const result = await sendFrameNotification({
+      fid,
+      title: notification.title,
+      body: notification.body,
+      notificationDetails: notification.notificationDetails,
+    });
+
+    if (result.state === "error") {
+      return NextResponse.json(
+        { error: result.error },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Notification error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 400 },
+    );
   }
 }
