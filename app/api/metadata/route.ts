@@ -6,7 +6,7 @@ export async function GET() {
         : 'http://localhost:3000';
 
     return NextResponse.json({
-        name: "BaseDrop Player",
+        name: "I'm a BaseDrop Player",
         description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
         image: "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
         external_url: baseUrl,
