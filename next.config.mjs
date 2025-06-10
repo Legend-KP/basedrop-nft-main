@@ -17,9 +17,6 @@ const nextConfig = {
         destination: '/api/metadata'
       }
     ];
-  },
-  experimental: {
-    esmExternals: "loose"
   }
 };
 
