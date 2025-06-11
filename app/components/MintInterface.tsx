@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 
 // Contract configuration
@@ -40,7 +40,8 @@ const CONTRACT_ABI = [
 const MintInterface = () => {
   // State management
   const [error, setError] = useState<string | null>(null);
-  const { address, isConnected } = useAccount();
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { isConnected } = useAccount();
 
   // Contract reads
   const { data: totalMinted, refetch: refetchTotal } = useContractRead({
@@ -63,7 +64,7 @@ const MintInterface = () => {
   });
 
   // Contract writes
-  const { writeAsync: mint, data: mintData, isLoading: isMinting } = useContractWrite({
+  const { writeAsync: mint, isLoading: isMinting } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'mint',
@@ -71,24 +72,24 @@ const MintInterface = () => {
     value: price || parseEther('0.01'),
   });
 
-  // Transaction tracking
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransaction({
-    hash: mintData?.hash,
-  });
-
-  // Reset success state after 5 seconds
+  // Reset success message after 5 seconds
   useEffect(() => {
     if (isSuccess) {
-      refetchTotal();
+      const timer = setTimeout(() => setIsSuccess(false), 5000);
+      return () => clearTimeout(timer);
     }
-  }, [isSuccess, refetchTotal]);
+  }, [isSuccess]);
 
   // Handle mint action
   const handleMint = async () => {
     try {
       setError(null);
       if (!mint) throw new Error("Minting not available");
-      await mint();
+      const tx = await mint();
+      if (tx) {
+        setIsSuccess(true);
+        refetchTotal();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
@@ -97,9 +98,6 @@ const MintInterface = () => {
 
   // Calculate if minting is sold out
   const isSoldOut = maxSupply && totalMinted && totalMinted >= maxSupply;
-
-  // Calculate if minting is in progress
-  const isLoading = isMinting || isConfirming;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8 bg-gray-100 rounded-lg shadow-lg">
@@ -128,18 +126,18 @@ const MintInterface = () => {
 
       <button
         onClick={handleMint}
-        disabled={!isConnected || isLoading || isSoldOut}
+        disabled={!isConnected || isMinting || isSoldOut}
         className={`
           px-6 py-3 rounded-lg text-white font-semibold
           transition-all duration-200
-          ${!isConnected || isLoading || isSoldOut
+          ${!isConnected || isMinting || isSoldOut
             ? 'bg-gray-400 cursor-not-allowed opacity-60'
             : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'
           }
         `}
       >
         {!isConnected ? 'Connect Wallet' :
-         isLoading ? 'Processing...' :
+         isMinting ? 'Processing...' :
          isSoldOut ? 'Sold Out' :
          'Mint NFT'}
       </button>
