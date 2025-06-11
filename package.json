@@ -3,6 +3,31 @@
 		"react": "^19.1.0",
 		"wagmi": "^2.15.6",
 		"next": "^15.3.3",
-		"@coinbase/onchainkit": "^0.38.13"
+		"@coinbase/onchainkit": "^0.38.13",
+		"@upstash/redis": "^1.35.0",
+		"@farcaster/frame-sdk": "^0.0.35",
+		"@tanstack/react-query": "^5.80.6",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"lucide-react": "^0.513.0",
+		"react-dom": "^19.1.0",
+		"tailwind-merge": "^3.3.0",
+		"tailwindcss-animate": "^1.0.7",
+		"viem": "^2.30.6"
+	},
+	"devDependencies": {
+		"@types/node": "^20.17.57",
+		"@types/react": "^18.3.23",
+		"@types/react-dom": "^18.3.7",
+		"eslint": "^8.57.1",
+		"eslint-config-next": "^14.2.15",
+		"eslint-config-prettier": "^10.1.5",
+		"eslint-plugin-prettier": "^5.4.1",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-react-hooks": "^5.2.0",
+		"postcss": "^8.5.4",
+		"prettier": "^3.5.3",
+		"tailwindcss": "^3.4.17",
+		"typescript": "^5.8.3"
 	}
 }
