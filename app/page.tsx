@@ -1,25 +1,17 @@
 "use client";
 
-import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import { useEffect } from "react";
-import { MintInterface } from "./components/MintInterface";
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
 
-export default function App() {
-  const { setFrameReady, isFrameReady } = useMiniKit();
+const MintInterface = dynamic(
+  () => import('./components/MintInterface').then(mod => ({ default: mod.MintInterface })),
+  { ssr: false }
+);
 
-  useEffect(() => {
-    if (!isFrameReady) {
-      setFrameReady();
-    }
-  }, [setFrameReady, isFrameReady]);
-
+export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen font-sans text-[var(--app-foreground)] mini-app-theme from-[var(--app-background)] to-[var(--app-gray)]">
-      <div className="w-full max-w-md mx-auto px-4 py-3">
-        <main className="flex-1">
-          <MintInterface />
-        </main>
-      </div>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <MintInterface />
+    </Suspense>
   );
 }
