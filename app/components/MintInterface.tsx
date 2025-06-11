@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead, type Config } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 
 // Contract configuration
@@ -63,14 +63,12 @@ const MintInterface = () => {
   });
 
   // Contract writes
-  const { status, writeContract: mint } = useContractWrite({
+  const { isPending: isMinting, sendTransaction: mint } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'mint',
     value: price || parseEther('0.01'),
   });
-
-  const isMinting = status === 'pending';
 
   // Poll for updates every 5 seconds
   useEffect(() => {
