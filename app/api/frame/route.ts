@@ -14,6 +14,8 @@ export async function POST() {
           target: URL
         }
       ],
+      title: "BaseDrop NFT",
+      description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse"
     });
   } catch (error) {
     console.error('Frame error:', error);
