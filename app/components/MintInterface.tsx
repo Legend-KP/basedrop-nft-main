@@ -65,7 +65,6 @@ const MintInterface = () => {
   // Contract writes
   const { 
     data: mintData,
-    status,
     write: mint,
     isPending: isMinting
   } = useContractWrite({
