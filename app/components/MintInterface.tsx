@@ -63,7 +63,11 @@ const MintInterface = () => {
   });
 
   // Contract writes
-  const { isPending: isMinting, writeAsync: mint } = useContractWrite({
+  const { 
+    data: mintData,
+    isLoading: isMinting,
+    write: mint
+  } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'mint',
@@ -87,16 +91,20 @@ const MintInterface = () => {
     }
   }, [isSuccess]);
 
+  // Watch for successful mint
+  useEffect(() => {
+    if (mintData) {
+      setIsSuccess(true);
+      refetchTotal();
+    }
+  }, [mintData, refetchTotal]);
+
   // Handle mint action
   const handleMint = async () => {
     try {
       setError(null);
       if (!mint) throw new Error("Minting not available");
-      const tx = await mint();
-      if (tx) {
-        setIsSuccess(true);
-        refetchTotal();
-      }
+      mint();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
