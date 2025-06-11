@@ -13,8 +13,6 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const URL = process.env.NEXT_PUBLIC_URL || 'https://basedrop-nft.vercel.app';
-  
   return {
     title: "BaseDrop NFT",
     description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
@@ -24,12 +22,11 @@ export async function generateMetadata(): Promise<Metadata> {
       images: ["https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png"],
     },
     other: {
-      'fc:frame:image': "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
-      'fc:frame:button:1': "Mint NFT",
-      'fc:frame:post_url': `${URL}/api/frame`,
-      'fc:frame:image:aspect_ratio': "1:1",
-      'fc:frame': "1",
-      'fc:frame:input:text': "LFG",
+      'fc:frame': 'vNext',
+      'fc:frame:image': 'https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png',
+      'fc:frame:button:1': 'Mint NFT',
+      'fc:frame:button:1:action': 'post',
+      'fc:frame:post_url': 'https://basedrop-nft.vercel.app/api/frame',
     },
   };
 }
