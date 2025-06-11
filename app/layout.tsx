@@ -12,10 +12,30 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export const metadata: Metadata = {
-  title: "BaseDrop NFT",
-  description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const URL = process.env.NEXT_PUBLIC_URL;
+  return {
+    title: "BaseDrop NFT",
+    description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
+    other: {
+      "fc:frame": JSON.stringify({
+        version: "vNext",
+        image: "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
+        buttons: [
+          {
+            label: "Mint NFT",
+            action: "post"
+          }
+        ],
+        post_url: `${URL}/api/frame`
+      }),
+      "fc:frame:image": "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
+      "fc:frame:post_url": `${URL}/api/frame`,
+      "fc:frame:button:1": "Mint NFT",
+      "fc:frame:button:1:action": "post",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
