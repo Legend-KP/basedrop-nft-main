@@ -24,11 +24,12 @@ export async function generateMetadata(): Promise<Metadata> {
       images: ["https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png"],
     },
     other: {
-      "fc:frame": "vNext",
-      "fc:frame:image": "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
-      "fc:frame:button:1": "Mint NFT",
-      "fc:frame:button:1:action": "post",
-      "fc:frame:post_url": `${URL}/api/frame`,
+      'fc:frame:image': "https://i.ibb.co/XZHdD4Dz/IMG-20250521-WA0005.png",
+      'fc:frame:button:1': "Mint NFT",
+      'fc:frame:post_url': `${URL}/api/frame`,
+      'fc:frame:image:aspect_ratio': "1:1",
+      'fc:frame': "1",
+      'fc:frame:input:text': "LFG",
     },
   };
 }
