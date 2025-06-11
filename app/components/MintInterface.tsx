@@ -48,7 +48,6 @@ const MintInterface = () => {
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'totalMinted',
-    watch: true,
   });
 
   const { data: maxSupply } = useContractRead({
@@ -71,6 +70,15 @@ const MintInterface = () => {
     args: [],
     value: price || parseEther('0.01'),
   });
+
+  // Poll for updates every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetchTotal();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [refetchTotal]);
 
   // Reset success message after 5 seconds
   useEffect(() => {
