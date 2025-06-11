@@ -65,14 +65,9 @@ const MintInterface = () => {
   // Contract writes
   const { 
     data: mintData,
-    write: mint,
-    isPending: isMinting
-  } = useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'mint',
-    value: price || parseEther('0.01'),
-  });
+    isPending: isMinting,
+    writeContract: mint
+  } = useContractWrite();
 
   // Poll for updates every 5 seconds
   useEffect(() => {
@@ -104,7 +99,13 @@ const MintInterface = () => {
     try {
       setError(null);
       if (!mint) throw new Error("Minting not available");
-      mint();
+      await mint({
+        abi: CONTRACT_ABI,
+        address: CONTRACT_ADDRESS as `0x${string}`,
+        functionName: 'mint' as const,
+        args: [] as const,
+        value: price || parseEther('0.01')
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
@@ -112,7 +113,7 @@ const MintInterface = () => {
   };
 
   // Calculate if minting is sold out
-  const isSoldOut = maxSupply && totalMinted && totalMinted >= maxSupply;
+  const isSoldOut = Boolean(maxSupply && totalMinted && totalMinted >= maxSupply);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8 bg-gray-100 rounded-lg shadow-lg">
@@ -160,4 +161,4 @@ const MintInterface = () => {
   );
 };
 
-export { MintInterface }; 
+export { MintInterface };
