@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  useMiniKit,
-} from "@coinbase/onchainkit/minikit";
+import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useEffect } from "react";
 import { MintInterface } from "./components/MintInterface";
 
