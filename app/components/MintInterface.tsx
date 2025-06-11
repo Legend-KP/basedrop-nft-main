@@ -1,82 +1,147 @@
 'use client';
 
-import { useState } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
-import { parseEther } from 'viem';
+import { useState, useEffect } from 'react';
+import { useAccount, useContractWrite, useContractRead, useWaitForTransaction } from 'wagmi';
+import { parseEther, formatEther } from 'viem';
 
+// Contract configuration
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
-
-const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"name":"BatchMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TokenMinted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"values","type":"uint256[]"}],"name":"TransferBatch","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"TransferSingle","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"value","type":"string"},{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"}],"name":"URI","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"newUri","type":"string"}],"name":"URIUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[],"name":"BASEDROP_PLAYER_ID","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_PER_WALLET","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"approvedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"id","type":"uint256"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address[]","name":"accounts","type":"address[]"},{"internalType":"uint256[]","name":"ids","type":"uint256[]"}],"name":"balanceOfBatch","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"name":"batchOwnerMint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractInfo","outputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"emergencyWithdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"mint","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"mintedPerWallet","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"ownerMint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256[]","name":"ids","type":"uint256[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeBatchTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"newuri","type":"string"}],"name":"setURI","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalMinted","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"uri","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
+const CONTRACT_ABI = [
+  {
+    "inputs": [],
+    "name": "mint",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalMinted",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_SUPPLY",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PRICE",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  }
+] as const;
 
 const MintInterface = () => {
-  const { address } = useAccount();
-  const [isLoading, setIsLoading] = useState(false);
+  // State management
+  const [error, setError] = useState<string | null>(null);
+  const { address, isConnected } = useAccount();
 
-  // Read contract data
-  const { data: totalMinted } = useContractRead({
-    abi,
+  // Contract reads
+  const { data: totalMinted, refetch: refetchTotal } = useContractRead({
     address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     functionName: 'totalMinted',
+    watch: true,
   });
 
   const { data: maxSupply } = useContractRead({
-    abi,
     address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     functionName: 'MAX_SUPPLY',
   });
 
   const { data: price } = useContractRead({
-    abi,
     address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     functionName: 'PRICE',
   });
 
-  // Write contract interaction
-  const { writeAsync: mint, isLoading: isMinting } = useContractWrite({
-    abi,
+  // Contract writes
+  const { writeAsync: mint, data: mintData, isLoading: isMinting } = useContractWrite({
     address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
     functionName: 'mint',
     args: [],
-    value: price ? price : parseEther('0.01'), // fallback to 0.01 ETH if price not loaded
+    value: price || parseEther('0.01'),
   });
 
+  // Transaction tracking
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransaction({
+    hash: mintData?.hash,
+  });
+
+  // Reset success state after 5 seconds
+  useEffect(() => {
+    if (isSuccess) {
+      refetchTotal();
+    }
+  }, [isSuccess, refetchTotal]);
+
+  // Handle mint action
   const handleMint = async () => {
     try {
-      setIsLoading(true);
-      if (mint) {
-        const tx = await mint();
-        console.log('Transaction:', tx);
-      }
-    } catch (error) {
-      console.error('Error minting:', error);
-    } finally {
-      setIsLoading(false);
+      setError(null);
+      if (!mint) throw new Error("Minting not available");
+      await mint();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to mint NFT");
+      console.error("Mint error:", err);
     }
   };
 
+  // Calculate if minting is sold out
+  const isSoldOut = maxSupply && totalMinted && totalMinted >= maxSupply;
+
+  // Calculate if minting is in progress
+  const isLoading = isMinting || isConfirming;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 bg-gray-100 rounded-lg">
-      <h2 className="text-3xl font-bold mb-6">BaseDrop NFT Mint</h2>
+    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 bg-gray-100 rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">BaseDrop NFT</h2>
       
       <div className="mb-6 text-center">
-        <p className="text-lg mb-2">Total Minted: {totalMinted?.toString() || '0'} / {maxSupply?.toString() || '0'}</p>
-        <p className="text-md">Price: {price ? `${price.toString()} ETH` : 'Loading...'}</p>
+        <p className="text-lg mb-2 font-medium">
+          Minted: {totalMinted?.toString() || '0'} / {maxSupply?.toString() || '0'}
+        </p>
+        <p className="text-md text-gray-600">
+          Price: {price ? formatEther(price) : '0.01'} ETH
+        </p>
       </div>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      {isSuccess && (
+        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+          NFT minted successfully!
+        </div>
+      )}
 
       <button
         onClick={handleMint}
-        disabled={!address || isLoading || isMinting || !mint}
-        className={`px-6 py-3 rounded-lg text-white font-semibold ${
-          !address || isLoading || isMinting || !mint
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'
-        }`}
+        disabled={!isConnected || isLoading || isSoldOut}
+        className={`
+          px-6 py-3 rounded-lg text-white font-semibold
+          transition-all duration-200
+          ${!isConnected || isLoading || isSoldOut
+            ? 'bg-gray-400 cursor-not-allowed opacity-60'
+            : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'
+          }
+        `}
       >
-        {!address
-          ? 'Connect Wallet to Mint'
-          : isLoading || isMinting
-          ? 'Minting...'
-          : 'Mint NFT'}
+        {!isConnected ? 'Connect Wallet' :
+         isLoading ? 'Processing...' :
+         isSoldOut ? 'Sold Out' :
+         'Mint NFT'}
       </button>
     </div>
   );
