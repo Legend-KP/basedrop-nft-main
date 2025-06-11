@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
+import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
+import Image from 'next/image';
 
 // Contract configuration
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
@@ -116,47 +118,72 @@ const MintInterface = () => {
   const isSoldOut = Boolean(maxSupply && totalMinted && totalMinted >= maxSupply);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 bg-gray-100 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">BaseDrop NFT</h2>
-      
-      <div className="mb-6 text-center">
-        <p className="text-lg mb-2 font-medium">
-          Minted: {totalMinted?.toString() || '0'} / {maxSupply?.toString() || '0'}
-        </p>
-        <p className="text-md text-gray-600">
-          Price: {price ? formatEther(price) : '0.01'} ETH
-        </p>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-lg overflow-hidden">
+        <div className="relative w-full aspect-square">
+          <Image
+            src="/basedrop-player.png"
+            alt="BaseDrop NFT"
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+        </div>
+
+        <div className="p-6 text-center">
+          <h1 className="text-3xl font-bold mb-6 text-[#1e293b]">
+            If you loved BaseDrop, mint the exclusive BaseDrop NFT and unlock perks in future games by Trenchverse.
+          </h1>
+
+          <div className="space-y-2 mb-6">
+            <p className="text-xl font-medium text-gray-700">
+              Total Minted: {totalMinted?.toString() || '0'} / {maxSupply?.toString() || '10000'}
+            </p>
+            <p className="text-lg text-gray-600">
+              Price: {price ? formatEther(price) : '0.001'} ETH on Base
+            </p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          {isSuccess && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+              NFT minted successfully!
+            </div>
+          )}
+
+          <p className="text-red-500 mb-4">
+            Please make sure you are connected to Base network
+          </p>
+
+          <div className="flex justify-center">
+            <WalletAdvancedDefault />
+          </div>
+
+          {isConnected && (
+            <button
+              onClick={handleMint}
+              disabled={isMinting || isSoldOut}
+              className={`
+                w-full mt-4 px-6 py-4 rounded-lg text-white font-semibold text-lg
+                transition-all duration-200
+                ${isMinting || isSoldOut
+                  ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                  : 'bg-[#f4442e] hover:bg-[#e33d29]'
+                }
+              `}
+            >
+              {isMinting ? 'Processing...' :
+               isSoldOut ? 'Sold Out' :
+               'Approve USDC'}
+            </button>
+          )}
+        </div>
       </div>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
-
-      {isSuccess && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-          NFT minted successfully!
-        </div>
-      )}
-
-      <button
-        onClick={handleMint}
-        disabled={!isConnected || isMinting || isSoldOut}
-        className={`
-          px-6 py-3 rounded-lg text-white font-semibold
-          transition-all duration-200
-          ${!isConnected || isMinting || isSoldOut
-            ? 'bg-gray-400 cursor-not-allowed opacity-60'
-            : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'
-          }
-        `}
-      >
-        {!isConnected ? 'Connect Wallet' :
-         isMinting ? 'Processing...' :
-         isSoldOut ? 'Sold Out' :
-         'Mint NFT'}
-      </button>
     </div>
   );
 };
