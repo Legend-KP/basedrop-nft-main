@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead, type Config } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 
 // Contract configuration
@@ -63,12 +63,14 @@ const MintInterface = () => {
   });
 
   // Contract writes
-  const { write: mint, isLoading: isMinting } = useContractWrite({
+  const { status, writeContract: mint } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'mint',
     value: price || parseEther('0.01'),
   });
+
+  const isMinting = status === 'pending';
 
   // Poll for updates every 5 seconds
   useEffect(() => {
@@ -92,7 +94,7 @@ const MintInterface = () => {
     try {
       setError(null);
       if (!mint) throw new Error("Minting not available");
-      mint();
+      await mint();
       setIsSuccess(true);
       refetchTotal();
     } catch (err) {
