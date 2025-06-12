@@ -56,7 +56,7 @@ const MintInterface = () => {
   const { 
     data: mintData,
     isPending: isMinting,
-    write: mint
+    writeContract: mint
   } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
