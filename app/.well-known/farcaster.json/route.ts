@@ -22,24 +22,19 @@ export async function GET() {
       payload: process.env.FARCASTER_PAYLOAD, 
       signature: process.env.FARCASTER_SIGNATURE,
     },
-    frame: withValidProperties({
+    frame: {
       version: "1",
-      name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME,
-      subtitle: process.env.NEXT_PUBLIC_APP_SUBTITLE,
-      description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
-      screenshotUrls: [],
-      iconUrl: process.env.NEXT_PUBLIC_APP_ICON,
-      splashImageUrl: process.env.NEXT_PUBLIC_APP_SPLASH_IMAGE,
-      splashBackgroundColor: process.env.NEXT_PUBLIC_SPLASH_BACKGROUND_COLOR,
-      homeUrl: URL,
-      webhookUrl: `${URL}/api/webhook`,
-      primaryCategory: process.env.NEXT_PUBLIC_APP_PRIMARY_CATEGORY,
-      tags: [],
-      heroImageUrl: process.env.NEXT_PUBLIC_APP_HERO_IMAGE,
-      tagline: process.env.NEXT_PUBLIC_APP_TAGLINE,
-      ogTitle: process.env.NEXT_PUBLIC_APP_OG_TITLE,
-      ogDescription: process.env.NEXT_PUBLIC_APP_OG_DESCRIPTION,
-      ogImageUrl: process.env.NEXT_PUBLIC_APP_OG_IMAGE,
-    }),
+      image: `${URL}/basedrop-player.png`,
+      buttons: [{
+        label: "Mint NFT"
+      }],
+      post_url: `${URL}/api/frame`,
+      aspect_ratio: "1:1"
+    },
+    app: {
+      name: "BaseDrop NFT",
+      description: "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse",
+      tags: ["nft", "gaming", "basedrop"],
+    }
   });
 }
