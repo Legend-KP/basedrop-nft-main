@@ -58,17 +58,11 @@ const MintInterface = () => {
     isPending: isMinting,
     writeContract: mint
   } = useContractWrite({
-    request: {
-      address: CONTRACT_ADDRESS,
-      abi: CONTRACT_ABI,
-      functionName: 'mint',
-      value: price || parseEther('0.01')
-    },
-    onSuccess: () => setIsSuccess(true),
-    onError: (err) => {
-      setError(err instanceof Error ? err.message : "Failed to mint NFT");
-      console.error("Mint error:", err);
-    }
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: 'mint',
+    args: [],
+    value: price || parseEther('0.01')
   });
 
   // Reset success message after 5 seconds
