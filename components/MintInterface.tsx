@@ -58,12 +58,16 @@ const MintInterface = () => {
     isPending: isMinting,
     writeContractAsync: mint
   } = useContractWrite({
-    functionName: 'mint',
-    chainId: 1,
-    abi: CONTRACT_ABI,
-    address: CONTRACT_ADDRESS,
-    args: [],
-    value: price || parseEther('0.01')
+    mutation: {
+      contract: {
+        address: CONTRACT_ADDRESS,
+        abi: CONTRACT_ABI,
+      },
+      name: 'mint',
+      args: [],
+      value: price || parseEther('0.01'),
+      chainId: 1
+    }
   });
 
   // Reset success message after 5 seconds
