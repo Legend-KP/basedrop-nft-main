@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useWriteContract } from 'wagmi';
 import { parseEther } from 'viem';
-import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
@@ -62,7 +62,7 @@ const MintInterface = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-[600px] bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 text-white p-6">
+    <div className="flex flex-col items-center justify-center w-full min-h-[600px] bg-gradient-to-br from-orange-600 via-orange-500 to-yellow-500 text-white p-6">
       <div className="w-full max-w-2xl flex flex-col items-center space-y-8">
         <div className="relative w-96 h-96 rounded-2xl overflow-hidden shadow-2xl">
           <Image
@@ -99,18 +99,23 @@ const MintInterface = () => {
               className={`w-full px-8 py-4 rounded-lg font-semibold text-lg text-center transition-all duration-200 ${
                 isMinting
                   ? 'bg-gray-400/50 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 text-emerald-900'
+                  : 'bg-white hover:bg-orange-50 text-orange-600'
               }`}
             >
               {isMinting ? 'Processing...' : 'Mint Your BaseDrop NFT!'}
             </button>
           ) : (
             <div className="w-full flex justify-center">
-              <div className="bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 p-[2px] rounded-lg w-full">
-                <div className="flex justify-center">
-                  <WalletAdvancedDefault />
-                </div>
-              </div>
+              <ConnectButton.Custom>
+                {({ openConnectModal }) => (
+                  <button
+                    onClick={openConnectModal}
+                    className="w-full px-8 py-4 rounded-lg font-semibold text-lg text-center bg-white hover:bg-orange-50 text-orange-600 transition-all duration-200"
+                  >
+                    Connect Wallet
+                  </button>
+                )}
+              </ConnectButton.Custom>
             </div>
           )}
         </div>

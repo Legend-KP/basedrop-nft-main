@@ -2,23 +2,19 @@
 
 import { type ReactNode, useState, useEffect } from "react";
 import { base } from "wagmi/chains";
-import { OnchainKitProvider } from "@coinbase/onchainkit";
-import { MiniKitProvider } from "@coinbase/onchainkit/minikit";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { coinbaseWallet } from "wagmi/connectors";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
 
-const wagmiConfig = createConfig({
+const config = createConfig({
   chains: [base],
-  connectors: [
-    coinbaseWallet({
-      appName: 'BaseDrop NFT',
-    }),
-  ],
-  ssr: true,
   transports: {
-    [base.id]: http(),
-  },
+    [base.id]: http()
+  }
 });
+
+const queryClient = new QueryClient();
 
 export function Providers(props: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -28,27 +24,12 @@ export function Providers(props: { children: ReactNode }) {
   }, []);
 
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <OnchainKitProvider
-        apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-        projectId={process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID}
-        chain={base}
-      >
-        <MiniKitProvider
-          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-          chain={base}
-          config={{
-            appearance: {
-              mode: "auto",
-              theme: "mini-app-theme",
-              name: process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || 'BaseDrop NFT',
-              logo: process.env.NEXT_PUBLIC_ICON_URL || '/basedrop-player.png',
-            },
-          }}
-        >
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider>
           {mounted ? props.children : null}
-        </MiniKitProvider>
-      </OnchainKitProvider>
+        </RainbowKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }

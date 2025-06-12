@@ -1,19 +1,20 @@
 {
 	"dependencies": {
-		"react": "^19.1.0",
-		"wagmi": "^2.15.6",
-		"next": "^15.3.3",
 		"@coinbase/onchainkit": "^0.38.13",
-		"@upstash/redis": "^1.35.0",
 		"@farcaster/frame-sdk": "^0.0.35",
+		"@rainbow-me/rainbowkit": "^2.2.6",
 		"@tanstack/react-query": "^5.80.6",
+		"@upstash/redis": "^1.35.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.513.0",
+		"next": "^15.3.3",
+		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"tailwind-merge": "^3.3.0",
 		"tailwindcss-animate": "^1.0.7",
-		"viem": "^2.30.6"
+		"viem": "^2.30.6",
+		"wagmi": "^2.15.6"
 	},
 	"devDependencies": {
 		"@types/node": "^20.17.57",
