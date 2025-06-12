@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useWriteContract } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
+import Image from 'next/image';
 
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
 const CONTRACT_ABI = [
@@ -97,24 +98,21 @@ const MintInterface = () => {
   const isSoldOut = Boolean(maxSupply && totalMinted && totalMinted >= maxSupply);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-[400px] bg-gradient-to-br from-blue-500 to-purple-600 text-white p-6">
-      <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">BaseDrop NFT</h2>
-          <WalletAdvancedDefault />
+    <div className="flex flex-col items-center justify-center w-full min-h-[600px] bg-gradient-to-br from-purple-900 to-blue-900 text-white p-6">
+      <div className="w-full max-w-2xl flex flex-col items-center space-y-8">
+        <div className="relative w-96 h-96">
+          <Image
+            src="/basedrop-player.png"
+            alt="BaseDrop NFT"
+            layout="fill"
+            objectFit="contain"
+            priority
+          />
         </div>
 
-        <div className="space-y-4">
-          <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
-            <span>Total Minted</span>
-            <span className="font-mono">{totalMinted?.toString() || '0'} / {maxSupply?.toString() || '0'}</span>
-          </div>
-
-          <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
-            <span>Price</span>
-            <span className="font-mono">{price ? formatEther(price) : '0.01'} ETH</span>
-          </div>
-        </div>
+        <p className="text-xl text-center font-medium max-w-lg">
+          If you loved BaseDrop, mint the exclusive BaseDrop NFT and unlock perks in future games by Trenchverse.
+        </p>
 
         {error && (
           <div className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-lg text-sm">
@@ -128,18 +126,20 @@ const MintInterface = () => {
           </div>
         )}
 
-        {isConnected && (
+        {isConnected ? (
           <button
             onClick={handleMint}
             disabled={isMinting || isSoldOut}
-            className={`w-full mt-6 px-6 py-3 rounded-lg font-semibold text-center transition-all duration-200 ${
+            className={`w-full max-w-md px-8 py-4 rounded-lg font-semibold text-lg text-center transition-all duration-200 ${
               isMinting || isSoldOut
                 ? 'bg-gray-400/50 cursor-not-allowed'
-                : 'bg-white text-blue-600 hover:bg-blue-50'
+                : 'bg-white text-blue-900 hover:bg-blue-50'
             }`}
           >
-            {isMinting ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Mint NFT'}
+            {isMinting ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Mint Your BaseDrop NFT!'}
           </button>
+        ) : (
+          <WalletAdvancedDefault />
         )}
       </div>
     </div>
