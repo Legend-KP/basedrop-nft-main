@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useContractWrite, useContractRead } from 'wagmi';
-import { parseEther, formatEther } from 'viem';
+import { parseEther } from 'viem';
 import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
 
@@ -46,12 +46,6 @@ const MintInterface = () => {
   const { isConnected } = useAccount();
 
   // Contract reads
-  const { data: maxSupply } = useContractRead({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'MAX_SUPPLY',
-  });
-
   const { data: price } = useContractRead({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
