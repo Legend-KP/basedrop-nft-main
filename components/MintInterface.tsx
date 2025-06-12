@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead, useConfig } from 'wagmi';
 import { parseEther } from 'viem';
-import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
+import { WalletButton } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
 
 // Contract configuration
@@ -44,6 +44,7 @@ const MintInterface = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
+  const config = useConfig();
 
   // Contract reads
   const { data: price } = useContractRead({
@@ -57,7 +58,11 @@ const MintInterface = () => {
     data: mintData,
     isPending: isMinting,
     writeContract: mint
-  } = useContractWrite();
+  } = useContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: 'mint',
+  });
 
   // Reset success message after 5 seconds
   useEffect(() => {
@@ -80,11 +85,8 @@ const MintInterface = () => {
       setError(null);
       if (!mint) throw new Error("Minting not available");
       await mint({
-        abi: CONTRACT_ABI,
-        address: CONTRACT_ADDRESS as `0x${string}`,
-        functionName: 'mint' as const,
-        args: [] as const,
-        value: price || parseEther('0.01')
+        args: [],
+        value: price || parseEther('0.01'),
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
@@ -111,7 +113,11 @@ const MintInterface = () => {
 
         <div className="w-full">
           {!isConnected ? (
-            <WalletAdvancedDefault buttonClassName="w-full px-6 py-3 rounded-lg font-semibold text-center bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200" />
+            <WalletButton
+              className="w-full px-6 py-3 rounded-lg font-semibold text-center bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200"
+            >
+              Connect Wallet
+            </WalletButton>
           ) : (
             <button
               onClick={handleMint}
