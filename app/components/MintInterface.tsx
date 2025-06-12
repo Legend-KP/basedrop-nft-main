@@ -106,7 +106,11 @@ const MintInterface = () => {
             </button>
           ) : (
             <div className="w-full flex justify-center">
-              <WalletAdvancedDefault className="!bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 !text-emerald-900 !px-8 !py-4 !rounded-lg !font-semibold !text-lg" />
+              <div className="bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 p-[2px] rounded-lg w-full">
+                <div className="flex justify-center">
+                  <WalletAdvancedDefault />
+                </div>
+              </div>
             </div>
           )}
         </div>
