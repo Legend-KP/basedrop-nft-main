@@ -2,12 +2,10 @@
 
 import { type ReactNode, useState, useEffect } from "react";
 import { base } from "wagmi/chains";
-import { WagmiProvider, createConfig } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
-import { http } from 'viem';
-import { injected } from 'wagmi/connectors';
 
 const config = getDefaultConfig({
   appName: 'BaseDrop NFT',
