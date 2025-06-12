@@ -13,7 +13,7 @@
 		"react-dom": "^19.1.0",
 		"tailwind-merge": "^3.3.0",
 		"tailwindcss-animate": "^1.0.7",
-		"viem": "^2.30.6",
+		"viem": "^2.31.0",
 		"wagmi": "^2.15.6"
 	},
 	"devDependencies": {

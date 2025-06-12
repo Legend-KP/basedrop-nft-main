@@ -1,60 +1,42 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAccount, useContractRead, useWriteContract } from 'wagmi';
+import { useState } from 'react';
+import { useAccount, useWriteContract, useTransaction } from 'wagmi';
 import { parseEther } from 'viem';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
-const CONTRACT_ABI = [
-  {
-    "inputs": [],
-    "name": "mint",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "PRICE",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  }
-] as const;
+const CONTRACT_ABI = [{
+  inputs: [],
+  name: 'mint',
+  outputs: [],
+  stateMutability: 'payable',
+  type: 'function',
+}] as const;
 
 const MintInterface = () => {
   const [error, setError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
 
-  const { data: price } = useContractRead({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'PRICE',
+  const { writeContract, isPending: isMinting } = useWriteContract();
+  const { isSuccess } = useTransaction({
+    hash: txHash,
   });
-
-  const { writeContractAsync, isPending: isMinting } = useWriteContract();
-
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => setIsSuccess(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [isSuccess]);
 
   const handleMint = async () => {
     try {
       setError(null);
-      const tx = await writeContractAsync({
-        address: CONTRACT_ADDRESS,
+      const result = await writeContract({
         abi: CONTRACT_ABI,
+        address: CONTRACT_ADDRESS,
         functionName: 'mint',
-        value: price ?? parseEther('0.01'),
+        value: parseEther('0.01'),
       });
-      console.log('Mint TX:', tx);
-      setIsSuccess(true);
+      if (typeof result === 'string') {
+        setTxHash(result as `0x${string}`);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
@@ -68,8 +50,8 @@ const MintInterface = () => {
           <Image
             src="/basedrop-player.png"
             alt="BaseDrop NFT"
-            layout="fill"
-            objectFit="contain"
+            width={384}
+            height={384}
             priority
             className="transform hover:scale-105 transition-transform duration-300"
           />

@@ -2,21 +2,22 @@
 
 import { type ReactNode, useState, useEffect } from "react";
 import { base } from "wagmi/chains";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, createConfig } from "wagmi";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
+import { http } from 'viem';
+import { injected } from 'wagmi/connectors';
 
-const config = createConfig({
+const config = getDefaultConfig({
+  appName: 'BaseDrop NFT',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
   chains: [base],
-  transports: {
-    [base.id]: http()
-  }
 });
 
 const queryClient = new QueryClient();
 
-export function Providers(props: { children: ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export function Providers(props: { children: ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          {mounted ? props.children : null}
+          {mounted ? children : null}
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
