@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useWriteContract } from 'wagmi';
-import { parseEther, formatEther } from 'viem';
+import { parseEther } from 'viem';
 import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
 
