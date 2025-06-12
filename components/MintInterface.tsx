@@ -58,9 +58,13 @@ const MintInterface = () => {
     isPending: isMinting,
     writeContract: mint
   } = useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'mint',
+    mutation: {
+      contract: {
+        address: CONTRACT_ADDRESS,
+        abi: CONTRACT_ABI,
+      },
+      functionName: 'mint',
+    }
   });
 
   // Reset success message after 5 seconds
