@@ -5,6 +5,9 @@ import { base } from "wagmi/chains";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { WagmiProvider, createConfig, http } from "wagmi";
 import { coinbaseWallet } from "wagmi/connectors";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const config = createConfig({
   chains: [base],
@@ -27,13 +30,15 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <WagmiProvider config={config}>
-      <OnchainKitProvider
-        apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-        projectId={process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID}
-        chain={base}
-      >
-        {mounted ? children : null}
-      </OnchainKitProvider>
+      <QueryClientProvider client={queryClient}>
+        <OnchainKitProvider
+          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || "test_key"}
+          projectId={process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "test_id"}
+          chain={base}
+        >
+          {mounted ? children : null}
+        </OnchainKitProvider>
+      </QueryClientProvider>
     </WagmiProvider>
   );
 }

@@ -1,7 +1,7 @@
+import "./globals.css";
 import "./theme.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import type { Metadata, Viewport } from "next";
-import "./globals.css";
 import { Providers } from "./providers";
 
 export const viewport: Viewport = {
@@ -41,7 +41,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className="min-h-screen bg-background antialiased" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
