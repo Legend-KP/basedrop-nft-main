@@ -56,7 +56,7 @@ const MintInterface = () => {
   const { 
     data: mintData,
     isPending: isMinting,
-    write: mint
+    writeAsync: mint
   } = useContractWrite({
     functionName: 'mint',
     chainId: 1,
