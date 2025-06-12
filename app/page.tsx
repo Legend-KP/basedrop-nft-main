@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import { MintInterface } from "@/components/MintInterface";
+import { MintInterface } from "./components/MintInterface";
 
 export default function App() {
   const { setFrameReady, isFrameReady } = useMiniKit();
