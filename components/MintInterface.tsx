@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
+import { useAccount, usePrepareContractWrite, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther } from 'viem';
 import { WalletAdvanced } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
@@ -52,18 +52,20 @@ const MintInterface = () => {
     functionName: 'PRICE',
   });
 
+  // Prepare contract write
+  const { config } = usePrepareContractWrite({
+    address: CONTRACT_ADDRESS,
+    abi: CONTRACT_ABI,
+    functionName: 'mint',
+    value: price || parseEther('0.01'),
+  });
+
   // Contract writes
   const { 
     data: mintData,
     isPending: isMinting,
     writeContract: mint
-  } = useContractWrite({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'mint',
-    args: [],
-    value: price || parseEther('0.01')
-  });
+  } = useContractWrite(config);
 
   // Reset success message after 5 seconds
   useEffect(() => {
