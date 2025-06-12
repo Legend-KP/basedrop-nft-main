@@ -58,12 +58,13 @@ const MintInterface = () => {
     isPending: isMinting,
     writeContract: mint
   } = useContractWrite({
-    mutation: {
-      contract: {
-        address: CONTRACT_ADDRESS,
-        abi: CONTRACT_ABI,
-      },
-      functionName: 'mint',
+    abi: CONTRACT_ABI,
+    address: CONTRACT_ADDRESS,
+    functionName: 'mint',
+    onSuccess: () => setIsSuccess(true),
+    onError: (err) => {
+      setError(err instanceof Error ? err.message : "Failed to mint NFT");
+      console.error("Mint error:", err);
     }
   });
 
