@@ -62,12 +62,10 @@ const MintInterface = () => {
 
   const { writeContractAsync, isPending: isMinting } = useWriteContract();
 
-  // Poll total minted
   useEffect(() => {
     const interval = setInterval(() => {
       refetchTotal();
     }, 5000);
-
     return () => clearInterval(interval);
   }, [refetchTotal]);
 
