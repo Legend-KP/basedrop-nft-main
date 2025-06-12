@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function POST(_req: NextRequest) {
+export async function POST() {
   const URL = process.env.NEXT_PUBLIC_URL;
 
   return new Response(
