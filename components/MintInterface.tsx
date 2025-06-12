@@ -56,11 +56,17 @@ const MintInterface = () => {
   const { 
     data: mintData,
     isPending: isMinting,
-    writeContract: mint
+    write: mint
   } = useContractWrite({
-    abi: CONTRACT_ABI,
-    address: CONTRACT_ADDRESS,
-    functionName: 'mint',
+    config: {
+      mode: 'prepared',
+      request: {
+        to: CONTRACT_ADDRESS,
+        data: CONTRACT_ABI,
+        functionName: 'mint',
+        value: price || parseEther('0.01'),
+      }
+    },
     onSuccess: () => setIsSuccess(true),
     onError: (err) => {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
@@ -88,10 +94,7 @@ const MintInterface = () => {
     try {
       setError(null);
       if (!mint) throw new Error("Minting not available");
-      await mint({
-        args: [],
-        value: price || parseEther('0.01'),
-      });
+      await mint();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
