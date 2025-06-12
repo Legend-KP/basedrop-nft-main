@@ -58,7 +58,7 @@ const MintInterface = () => {
     isPending: isMinting,
     writeContract: mint
   } = useContractWrite({
-    config: {
+    request: {
       address: CONTRACT_ADDRESS,
       abi: CONTRACT_ABI,
       functionName: 'mint',
