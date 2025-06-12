@@ -15,7 +15,8 @@ export async function POST() {
             action: "link",
             target: URL
           }],
-          aspect_ratio: "1:1"
+          aspect_ratio: "1:1",
+          post_url: `${URL}/api/frame`
         }
       }),
       {

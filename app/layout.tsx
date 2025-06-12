@@ -1,5 +1,5 @@
 import "./theme.css";
-import "@coinbase/onchainkit/styles.css";
+import "@rainbow-me/rainbowkit/styles.css";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -12,9 +12,9 @@ export const viewport: Viewport = {
 };
 
 const defaultUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
-const defaultTitle = process.env.NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME || 'BaseDrop NFT';
+const defaultTitle = 'BaseDrop NFT';
 const defaultDescription = "Exclusive BaseDrop NFT that unlocks perks in future games by Trenchverse";
-const defaultImage = process.env.NEXT_PUBLIC_APP_HERO_IMAGE || '/basedrop-player.png';
+const defaultImage = '/basedrop-player.png';
 
 export const metadata: Metadata = {
   title: defaultTitle,
@@ -28,16 +28,17 @@ export const metadata: Metadata = {
   other: {
     "fc:frame": "vNext",
     "fc:frame:image": defaultImage,
-    "fc:frame:button:1": "Mint NFT",
+    "fc:frame:button:1": "Connect Wallet",
     "fc:frame:post_url": `${defaultUrl}/api/frame`,
+    "fc:frame:image:aspect_ratio": "1:1",
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background" suppressHydrationWarning>
