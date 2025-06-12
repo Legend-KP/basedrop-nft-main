@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther } from 'viem';
-import { WalletAdvancedButton } from '@coinbase/onchainkit/wallet';
+import { WalletAdvanced } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
 
 // Contract configuration
@@ -113,8 +113,8 @@ const MintInterface = () => {
         <div className="w-full">
           {!isConnected ? (
             <div className="w-full">
-              <WalletAdvancedButton 
-                className="w-full px-6 py-3 rounded-lg font-semibold text-center bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200"
+              <WalletAdvanced 
+                buttonClassName="w-full px-6 py-3 rounded-lg font-semibold text-center bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200"
               />
             </div>
           ) : (
