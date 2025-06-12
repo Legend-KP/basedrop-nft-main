@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   const URL = process.env.NEXT_PUBLIC_URL;
 
   return new Response(
@@ -27,6 +27,6 @@ export async function POST(req: NextRequest) {
   );
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return new Response('Method not allowed', { status: 405 });
 } 
