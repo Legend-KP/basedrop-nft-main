@@ -56,17 +56,19 @@ const MintInterface = () => {
   const { 
     data: mintData,
     isPending: isMinting,
-    writeAsync: mint
+    sendTransaction: mint
   } = useContractWrite({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'mint',
     args: [],
     value: price || parseEther('0.01'),
-    onSuccess: () => setIsSuccess(true),
-    onError: (err) => {
-      setError(err instanceof Error ? err.message : "Failed to mint NFT");
-      console.error("Mint error:", err);
+    onSuccess(data) {
+      setIsSuccess(true);
+    },
+    onError(error) {
+      setError(error instanceof Error ? error.message : "Failed to mint NFT");
+      console.error("Mint error:", error);
     }
   });
 
