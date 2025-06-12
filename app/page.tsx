@@ -1,13 +1,13 @@
 "use client";
 
+import * as React from 'react';
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import { useEffect } from "react";
-import { MintInterface } from "./components/MintInterface";
+import { MintInterface } from "@/components/MintInterface";
 
 export default function App() {
   const { setFrameReady, isFrameReady } = useMiniKit();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isFrameReady) {
       setFrameReady();
     }
