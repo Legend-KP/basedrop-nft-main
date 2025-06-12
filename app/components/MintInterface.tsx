@@ -17,20 +17,6 @@ const CONTRACT_ABI = [
   },
   {
     "inputs": [],
-    "name": "totalMinted",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_SUPPLY",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "PRICE",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -43,18 +29,6 @@ const MintInterface = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
 
-  const { data: totalMinted, refetch: refetchTotal } = useContractRead({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'totalMinted',
-  });
-
-  const { data: maxSupply } = useContractRead({
-    address: CONTRACT_ADDRESS,
-    abi: CONTRACT_ABI,
-    functionName: 'MAX_SUPPLY',
-  });
-
   const { data: price } = useContractRead({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
@@ -62,13 +36,6 @@ const MintInterface = () => {
   });
 
   const { writeContractAsync, isPending: isMinting } = useWriteContract();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refetchTotal();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [refetchTotal]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -88,25 +55,23 @@ const MintInterface = () => {
       });
       console.log('Mint TX:', tx);
       setIsSuccess(true);
-      refetchTotal();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
     }
   };
 
-  const isSoldOut = Boolean(maxSupply && totalMinted && totalMinted >= maxSupply);
-
   return (
-    <div className="flex flex-col items-center justify-center w-full min-h-[600px] bg-gradient-to-br from-purple-900 to-blue-900 text-white p-6">
+    <div className="flex flex-col items-center justify-center w-full min-h-[600px] bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900 text-white p-6">
       <div className="w-full max-w-2xl flex flex-col items-center space-y-8">
-        <div className="relative w-96 h-96">
+        <div className="relative w-96 h-96 rounded-2xl overflow-hidden shadow-2xl">
           <Image
             src="/basedrop-player.png"
             alt="BaseDrop NFT"
             layout="fill"
             objectFit="contain"
             priority
+            className="transform hover:scale-105 transition-transform duration-300"
           />
         </div>
 
@@ -126,21 +91,25 @@ const MintInterface = () => {
           </div>
         )}
 
-        {isConnected ? (
-          <button
-            onClick={handleMint}
-            disabled={isMinting || isSoldOut}
-            className={`w-full max-w-md px-8 py-4 rounded-lg font-semibold text-lg text-center transition-all duration-200 ${
-              isMinting || isSoldOut
-                ? 'bg-gray-400/50 cursor-not-allowed'
-                : 'bg-white text-blue-900 hover:bg-blue-50'
-            }`}
-          >
-            {isMinting ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Mint Your BaseDrop NFT!'}
-          </button>
-        ) : (
-          <WalletAdvancedDefault />
-        )}
+        <div className="w-full max-w-md">
+          {isConnected ? (
+            <button
+              onClick={handleMint}
+              disabled={isMinting}
+              className={`w-full px-8 py-4 rounded-lg font-semibold text-lg text-center transition-all duration-200 ${
+                isMinting
+                  ? 'bg-gray-400/50 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 text-emerald-900'
+              }`}
+            >
+              {isMinting ? 'Processing...' : 'Mint Your BaseDrop NFT!'}
+            </button>
+          ) : (
+            <div className="w-full flex justify-center">
+              <WalletAdvancedDefault className="!bg-gradient-to-r from-emerald-400 to-cyan-400 hover:from-emerald-500 hover:to-cyan-500 !text-emerald-900 !px-8 !py-4 !rounded-lg !font-semibold !text-lg" />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
