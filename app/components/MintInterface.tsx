@@ -94,4 +94,4 @@ const MintInterface = () => {
   );
 };
 
-export { MintInterface };
+export { MintInterface }; 

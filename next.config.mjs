@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Silence warnings
-  // https://github.com/WalletConnect/walletconnect-monorepo/issues/1908
-  webpack: (config) => {
-    config.externals.push("pino-pretty", "lokijs", "encoding");
-    return config;
-  },
+  reactStrictMode: true,
   images: {
-    domains: [],
-    unoptimized: true
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    return config;
   },
   async rewrites() {
     return [
