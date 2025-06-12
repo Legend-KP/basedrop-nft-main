@@ -11,6 +11,13 @@ const nextConfig = {
   },
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
+    
+    // Handle worker files
+    config.module.rules.push({
+      test: /HeartbeatWorker\.js$/,
+      type: 'asset/resource',
+    });
+
     return config;
   },
   async rewrites() {
