@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
+import { useAccount, useContractRead, useWriteContract } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
 import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
 
-// Contract configuration
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
 const CONTRACT_ABI = [
   {
@@ -18,33 +17,31 @@ const CONTRACT_ABI = [
   {
     "inputs": [],
     "name": "totalMinted",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "MAX_SUPPLY",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "PRICE",
-    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   }
 ] as const;
 
 const MintInterface = () => {
-  // State management
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
 
-  // Contract reads
   const { data: totalMinted, refetch: refetchTotal } = useContractRead({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
@@ -63,14 +60,9 @@ const MintInterface = () => {
     functionName: 'PRICE',
   });
 
-  // Contract writes
-  const { 
-    data: mintData,
-    isPending: isMinting,
-    writeContract: mint
-  } = useContractWrite();
+  const { writeContractAsync, isPending: isMinting } = useWriteContract();
 
-  // Poll for updates every 5 seconds
+  // Poll total minted
   useEffect(() => {
     const interval = setInterval(() => {
       refetchTotal();
@@ -79,7 +71,6 @@ const MintInterface = () => {
     return () => clearInterval(interval);
   }, [refetchTotal]);
 
-  // Reset success message after 5 seconds
   useEffect(() => {
     if (isSuccess) {
       const timer = setTimeout(() => setIsSuccess(false), 5000);
@@ -87,33 +78,24 @@ const MintInterface = () => {
     }
   }, [isSuccess]);
 
-  // Watch for successful mint
-  useEffect(() => {
-    if (mintData) {
-      setIsSuccess(true);
-      refetchTotal();
-    }
-  }, [mintData, refetchTotal]);
-
-  // Handle mint action
   const handleMint = async () => {
     try {
       setError(null);
-      if (!mint) throw new Error("Minting not available");
-      await mint({
+      const tx = await writeContractAsync({
+        address: CONTRACT_ADDRESS,
         abi: CONTRACT_ABI,
-        address: CONTRACT_ADDRESS as `0x${string}`,
-        functionName: 'mint' as const,
-        args: [] as const,
-        value: price || parseEther('0.01')
+        functionName: 'mint',
+        value: price ?? parseEther('0.01'),
       });
+      console.log('Mint TX:', tx);
+      setIsSuccess(true);
+      refetchTotal();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
     }
   };
 
-  // Calculate if minting is sold out
   const isSoldOut = Boolean(maxSupply && totalMinted && totalMinted >= maxSupply);
 
   return (
@@ -123,13 +105,13 @@ const MintInterface = () => {
           <h2 className="text-2xl font-bold">BaseDrop NFT</h2>
           <WalletAdvancedDefault />
         </div>
-        
+
         <div className="space-y-4">
           <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
             <span>Total Minted</span>
             <span className="font-mono">{totalMinted?.toString() || '0'} / {maxSupply?.toString() || '0'}</span>
           </div>
-          
+
           <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
             <span>Price</span>
             <span className="font-mono">{price ? formatEther(price) : '0.01'} ETH</span>
@@ -152,18 +134,13 @@ const MintInterface = () => {
           <button
             onClick={handleMint}
             disabled={isMinting || isSoldOut}
-            className={`
-              w-full mt-6 px-6 py-3 rounded-lg font-semibold text-center
-              transition-all duration-200
-              ${isMinting || isSoldOut
+            className={`w-full mt-6 px-6 py-3 rounded-lg font-semibold text-center transition-all duration-200 ${
+              isMinting || isSoldOut
                 ? 'bg-gray-400/50 cursor-not-allowed'
                 : 'bg-white text-blue-600 hover:bg-blue-50'
-              }
-            `}
+            }`}
           >
-            {isMinting ? 'Processing...' :
-             isSoldOut ? 'Sold Out' :
-             'Mint NFT'}
+            {isMinting ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Mint NFT'}
           </button>
         )}
       </div>
