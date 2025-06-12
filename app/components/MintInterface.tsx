@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount, useWriteContract, useTransaction } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { parseEther } from 'viem';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { WalletAdvancedDefault } from '@coinbase/onchainkit/wallet';
 import Image from 'next/image';
 
 const CONTRACT_ADDRESS = "0xb96e24FE96AfF9088749d9bB2F6195ba886e7FD8" as const;
@@ -17,26 +17,21 @@ const CONTRACT_ABI = [{
 
 const MintInterface = () => {
   const [error, setError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
-  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
-
   const { writeContract, isPending: isMinting } = useWriteContract();
-  const { isSuccess } = useTransaction({
-    hash: txHash,
-  });
 
   const handleMint = async () => {
     try {
       setError(null);
-      const result = await writeContract({
+      await writeContract({
         abi: CONTRACT_ABI,
         address: CONTRACT_ADDRESS,
         functionName: 'mint',
         value: parseEther('0.01'),
       });
-      if (typeof result === 'string') {
-        setTxHash(result as `0x${string}`);
-      }
+      setIsSuccess(true);
+      setTimeout(() => setIsSuccess(false), 5000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mint NFT");
       console.error("Mint error:", err);
@@ -88,16 +83,9 @@ const MintInterface = () => {
             </button>
           ) : (
             <div className="w-full flex justify-center">
-              <ConnectButton.Custom>
-                {({ openConnectModal }) => (
-                  <button
-                    onClick={openConnectModal}
-                    className="w-full px-8 py-4 rounded-lg font-semibold text-lg text-center bg-white hover:bg-orange-50 text-orange-600 transition-all duration-200"
-                  >
-                    Connect Wallet
-                  </button>
-                )}
-              </ConnectButton.Custom>
+              <div className="w-full bg-white hover:bg-orange-50 rounded-lg transition-all duration-200">
+                <WalletAdvancedDefault />
+              </div>
             </div>
           )}
         </div>
