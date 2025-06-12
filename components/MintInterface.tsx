@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useContractWrite, useContractRead, useConfig } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { parseEther } from 'viem';
-import { WalletButton } from '@coinbase/onchainkit/wallet';
+import { ConnectButton } from '@coinbase/onchainkit';
 import Image from 'next/image';
 
 // Contract configuration
@@ -44,7 +44,6 @@ const MintInterface = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const { isConnected } = useAccount();
-  const config = useConfig();
 
   // Contract reads
   const { data: price } = useContractRead({
@@ -113,11 +112,20 @@ const MintInterface = () => {
 
         <div className="w-full">
           {!isConnected ? (
-            <WalletButton
-              className="w-full px-6 py-3 rounded-lg font-semibold text-center bg-white text-blue-600 hover:bg-blue-50 transition-all duration-200"
+            <ConnectButton
+              style={{
+                width: '100%',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                textAlign: 'center',
+                backgroundColor: 'white',
+                color: '#2563eb',
+                transition: 'all 0.2s',
+              }}
             >
               Connect Wallet
-            </WalletButton>
+            </ConnectButton>
           ) : (
             <button
               onClick={handleMint}
