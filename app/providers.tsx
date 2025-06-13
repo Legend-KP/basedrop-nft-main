@@ -46,7 +46,6 @@ export function Providers({ children }: { children: ReactNode }) {
           apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY || "test_key"}
           projectId={process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "test_id"}
           chain={base}
-          initialChain={base}
         >
           {children}
         </OnchainKitProvider>
