@@ -15,7 +15,13 @@ const nextConfig = {
     // Handle worker files
     config.module.rules.push({
       test: /HeartbeatWorker\.js$/,
-      type: 'asset/resource',
+      type: 'javascript/auto',
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
     });
 
     return config;
@@ -30,4 +36,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+export default nextConfig; 
