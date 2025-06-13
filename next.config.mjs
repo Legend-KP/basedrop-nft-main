@@ -33,7 +33,21 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-src 'self' https:;"
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.farcaster.xyz https://*.walletconnect.com https://*.walletconnect.org https://*.coinbase.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https: blob:",
+              "connect-src 'self' https: wss:",
+              "frame-src 'self' https://*.farcaster.xyz https://*.walletconnect.com https://*.walletconnect.org https://*.coinbase.com",
+              "font-src 'self'",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
+              "block-all-mixed-content",
+              "upgrade-insecure-requests"
+            ].join('; ')
           }
         ]
       }
