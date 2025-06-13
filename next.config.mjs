@@ -29,27 +29,15 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: '/(.*)',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: `
-              default-src 'self';
-              script-src 'self' 'unsafe-eval' 'unsafe-inline';
-              style-src 'self' 'unsafe-inline';
-              img-src 'self' blob: data: https:;
-              font-src 'self';
-              object-src 'none';
-              base-uri 'self';
-              form-action 'self';
-              frame-ancestors 'none';
-              block-all-mixed-content;
-              upgrade-insecure-requests;
-            `.replace(/\s+/g, ' ').trim()
+            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline' data: blob: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-src 'self' https:;"
           }
         ]
       }
-    ];
+    ]
   },
   async rewrites() {
     return [
